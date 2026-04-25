@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PawsomeCare – Hundrastning & Hundpassning · Töreboda & Mariestad</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FDF6EC; --warm: #F5E6CC; --bark: #3B2A1A;
+    --amber: #D4831A; --leaf: #4A7C59; --sand: #C9A96E; --pale: #FBF0DC;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--cream); color: var(--bark); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+
+  .lang-toggle {
+    position: fixed; top: 1rem; right: 1rem; z-index: 200;
+    display: flex; background: white; border-radius: 50px;
+    box-shadow: 0 2px 12px rgba(59,42,26,0.15); overflow: hidden;
+    border: 1px solid rgba(59,42,26,0.1);
+  }
+  .lang-btn {
+    padding: 0.4rem 0.9rem; font-size: 0.8rem; font-weight: 600;
+    cursor: pointer; border: none; background: transparent;
+    color: rgba(59,42,26,0.5); transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .lang-btn.active { background: var(--amber); color: white; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.1rem 3rem;
+    background: rgba(253,246,236,0.93); backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(59,42,26,0.08);
+  }
+  .logo { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 900; color: var(--bark); letter-spacing: -0.02em; }
+  .logo span { color: var(--amber); }
+  nav ul { list-style: none; display: flex; gap: 2rem; align-items: center; }
+  nav ul a { text-decoration: none; color: var(--bark); font-size: 0.88rem; font-weight: 500; opacity: 0.7; transition: opacity 0.2s; }
+  nav ul a:hover { opacity: 1; }
+  .nav-cta { background: var(--amber) !important; color: white !important; opacity: 1 !important; padding: 0.5rem 1.2rem; border-radius: 50px; }
+  .nav-cta:hover { background: var(--bark) !important; }
+
+  .hero {
+    min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center; padding: 8rem 3rem 5rem; gap: 3rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; right: -120px; top: -80px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--warm) 0%, transparent 70%);
+    border-radius: 50%; z-index: 0;
+  }
+  .hero-text { position: relative; z-index: 1; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--warm); border: 1px solid var(--sand);
+    border-radius: 50px; padding: 0.35rem 1rem;
+    font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--amber); margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.8rem, 4.5vw, 4.5rem);
+    font-weight: 900; line-height: 1.0; letter-spacing: -0.03em;
+    margin-bottom: 1.5rem; animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero h1 em { font-style: italic; color: var(--amber); }
+  .hero-desc {
+    font-size: 1.05rem; line-height: 1.7; color: rgba(59,42,26,0.7);
+    max-width: 440px; margin-bottom: 2.5rem; animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeUp 0.6s 0.3s ease both; }
+  .btn-primary {
+    background: var(--bark); color: var(--cream);
+    padding: 0.9rem 2rem; border-radius: 50px;
+    text-decoration: none; font-weight: 500; font-size: 0.95rem;
+    transition: background 0.2s, transform 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-primary:hover { background: var(--amber); transform: translateY(-2px); }
+  .btn-secondary {
+    background: transparent; color: var(--bark);
+    padding: 0.9rem 2rem; border-radius: 50px; border: 1.5px solid var(--sand);
+    text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: border-color 0.2s, transform 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--bark); transform: translateY(-2px); }
+
+  .hero-visual { position: relative; z-index: 1; display: flex; justify-content: center; animation: fadeUp 0.7s 0.15s ease both; }
+  .hero-card {
+    background: var(--warm); border-radius: 32px; padding: 2rem;
+    width: 100%; max-width: 400px;
+    box-shadow: 0 24px 60px rgba(59,42,26,0.12), 0 4px 12px rgba(59,42,26,0.06);
+  }
+  .dog-emoji-big { font-size: 7rem; text-align: center; display: block; margin-bottom: 0.5rem; line-height: 1; }
+  .card-tagline { text-align: center; font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
+  .card-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .badge { background: white; border-radius: 50px; padding: 0.35rem 0.8rem; font-size: 0.78rem; font-weight: 500; display: flex; align-items: center; gap: 0.3rem; box-shadow: 0 2px 8px rgba(59,42,26,0.08); }
+  .areas-pill { display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
+  .area-tag { background: var(--leaf); color: white; border-radius: 50px; padding: 0.3rem 0.9rem; font-size: 0.78rem; font-weight: 600; }
+  .float-tag { position: absolute; background: var(--leaf); color: white; border-radius: 16px; padding: 0.5rem 0.9rem; font-size: 0.8rem; font-weight: 500; box-shadow: 0 4px 16px rgba(74,124,89,0.3); white-space: nowrap; }
+  .float-tag.left { left: -50px; top: 35%; animation: float 3s ease-in-out infinite; }
+  .float-tag.right { right: -40px; bottom: 25%; animation: float 3s 1.5s ease-in-out infinite; }
+
+  .trust-bar { background: var(--bark); color: var(--cream); display: flex; justify-content: center; gap: 3.5rem; flex-wrap: wrap; padding: 2rem 3rem; }
+  .trust-item { display: flex; align-items: center; gap: 0.75rem; }
+  .trust-item span:first-child { font-size: 1.5rem; }
+  .trust-label { font-size: 0.82rem; opacity: 0.7; }
+  .trust-value { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 700; }
+
+  section { padding: 6rem 3rem; }
+  .section-eyebrow { display: inline-block; background: var(--warm); border-radius: 50px; padding: 0.3rem 1rem; font-size: 0.73rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); margin-bottom: 1rem; }
+  .section-title { font-family: 'Fraunces', serif; font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 900; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1rem; }
+  .section-sub { font-size: 1rem; line-height: 1.7; color: rgba(59,42,26,0.65); max-width: 520px; }
+
+  #walking { background: var(--pale); }
+
+  .walk-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2.5rem; margin-top: 2rem; }
+  .walk-tab { padding: 0.6rem 1.2rem; border-radius: 50px; border: 1.5px solid var(--sand); background: transparent; color: var(--bark); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .walk-tab.active { background: var(--bark); color: var(--cream); border-color: var(--bark); }
+  .walk-tab:hover:not(.active) { border-color: var(--amber); color: var(--amber); }
+
+  .walk-panel { display: none; }
+  .walk-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
+
+  .walk-card, .walk-info-box { background: white; border-radius: 24px; padding: 2rem; border: 1px solid rgba(59,42,26,0.07); box-shadow: 0 4px 20px rgba(59,42,26,0.06); }
+  .walk-card-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.2rem; }
+  .walk-icon { font-size: 2.2rem; line-height: 1; }
+  .walk-card h3 { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.2rem; }
+  .walk-subtitle { font-size: 0.82rem; color: rgba(59,42,26,0.55); font-style: italic; }
+  .walk-desc { font-size: 0.9rem; line-height: 1.65; color: rgba(59,42,26,0.7); margin-bottom: 1.4rem; }
+  .walk-features { list-style: none; margin-bottom: 1.5rem; }
+  .walk-features li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.87rem; padding: 0.35rem 0; color: rgba(59,42,26,0.75); border-bottom: 1px solid rgba(59,42,26,0.05); }
+  .walk-features li:last-child { border-bottom: none; }
+  .feat-check { color: var(--leaf); font-size: 0.9rem; margin-top: 1px; flex-shrink: 0; }
+  .walk-price-box { background: var(--warm); border-radius: 16px; padding: 1.2rem 1.4rem; display: flex; justify-content: space-between; align-items: center; }
+  .walk-price { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 900; color: var(--amber); }
+  .walk-price small { font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 400; color: rgba(59,42,26,0.5); display: block; }
+  .walk-book-btn { background: var(--amber); color: white; border: none; padding: 0.65rem 1.3rem; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; text-decoration: none; transition: background 0.2s; display: inline-block; }
+  .walk-book-btn:hover { background: var(--bark); }
+  .walk-info-box h4 { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; }
+  .walk-info-box p { font-size: 0.88rem; line-height: 1.65; color: rgba(59,42,26,0.7); margin-bottom: 0.8rem; }
+  .tag-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+  .tag { background: var(--warm); border-radius: 50px; padding: 0.3rem 0.8rem; font-size: 0.78rem; color: var(--bark); font-weight: 500; }
+  .tag.green { background: #E5F0E8; color: var(--leaf); }
+
+  #sitting { background: white; }
+  #other-services { background: var(--pale); }
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.4rem; margin-top: 3rem; }
+  .service-card { background: white; border-radius: 24px; padding: 1.8rem; border: 1px solid rgba(59,42,26,0.06); transition: transform 0.3s, box-shadow 0.3s; }
+  .service-card:hover { transform: translateY(-5px); box-shadow: 0 18px 45px rgba(59,42,26,0.1); }
+  .service-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.1rem; }
+  .icon-amber { background: #FEF0DC; } .icon-green { background: #E5F0E8; } .icon-bark { background: #EBE5DF; }
+  .service-card h3 { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .service-card p { font-size: 0.87rem; line-height: 1.6; color: rgba(59,42,26,0.65); margin-bottom: 1.1rem; }
+  .service-price { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 900; color: var(--amber); }
+  .service-price small { font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 400; color: rgba(59,42,26,0.5); }
+
+  #how { background: var(--pale); }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 3rem; }
+  .step { text-align: center; }
+  .step-num { width: 50px; height: 50px; border-radius: 50%; background: var(--amber); color: white; font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 900; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+  .step h3 { font-family: 'Fraunces', serif; font-size: 1.1rem; margin-bottom: 0.4rem; }
+  .step p { font-size: 0.86rem; line-height: 1.6; color: rgba(59,42,26,0.6); }
+
+  #contact { background: var(--bark); color: var(--cream); text-align: center; }
+  #contact .section-eyebrow { background: rgba(255,255,255,0.1); color: var(--sand); }
+  #contact .section-title { color: var(--cream); }
+  #contact .section-sub { color: rgba(253,246,236,0.65); margin: 0 auto 2.5rem; }
+  .contact-form { max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+  .contact-form input, .contact-form textarea, .contact-form select { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 0.85rem 1.1rem; color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: 0.93rem; outline: none; resize: none; transition: border-color 0.2s; }
+  .contact-form input::placeholder, .contact-form textarea::placeholder { color: rgba(253,246,236,0.4); }
+  .contact-form input:focus, .contact-form textarea:focus, .contact-form select:focus { border-color: var(--sand); }
+  .contact-form select option { background: var(--bark); }
+  .contact-form textarea { min-height: 90px; }
+  .btn-submit { background: var(--amber); color: white; border: none; padding: 1rem 2rem; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+  .btn-submit:hover { background: var(--sand); transform: translateY(-2px); }
+
+  footer { background: #2A1D0F; color: rgba(253,246,236,0.5); text-align: center; padding: 1.8rem 3rem; font-size: 0.83rem; }
+  footer a { color: var(--sand); text-decoration: none; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+
+  @media (max-width: 900px) { .walk-panel.active { grid-template-columns: 1fr; } }
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; }
+    .hero-visual { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .trust-bar { gap: 1.8rem; padding: 1.8rem 1.5rem; }
+    .float-tag { display: none; }
+    .lang-toggle { top: 0.8rem; right: 1rem; }
+    .walk-tabs { gap: 0.4rem; }
+    .walk-tab { font-size: 0.78rem; padding: 0.5rem 0.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="lang-toggle">
+  <button class="lang-btn active" onclick="setLang('sv')">SV</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
+</div>
+
+<nav>
+  <div class="logo">Pawsome<span>Care</span></div>
+  <ul>
+    <li><a href="#walking" id="nav-walking">Rastning</a></li>
+    <li><a href="#sitting" id="nav-sitting">Hundpassning</a></li>
+    <li><a href="#other-services" id="nav-services">Tjänster</a></li>
+    <li><a href="#how" id="nav-how">Hur det fungerar</a></li>
+    <li><a href="#contact" class="nav-cta" id="nav-book">Boka nu</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-text">
+    <div class="eyebrow" id="hero-eyebrow">🐾 Hundrastning &amp; Hundpassning · Töreboda &amp; Mariestad</div>
+    <h1 id="hero-h1">Din hund förtjänar det <em>bästa</em> när du är borta</h1>
+    <p class="hero-desc" id="hero-desc">Professionell hundrastning och hundpassning med kärlek, pålitlighet och dagliga uppdateringar — i Töreboda och Mariestad.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary" id="hero-btn1">📅 Boka ett besök</a>
+      <a href="#walking" class="btn-secondary" id="hero-btn2">Se priser</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-card">
+      <span class="dog-emoji-big">🐕</span>
+      <div class="card-tagline" id="card-tagline">Glada svansar, varje gång</div>
+      <div class="card-badges">
+        <div class="badge" id="badge1">✅ Ansvarsförsäkrad</div>
+        <div class="badge" id="badge2">📸 Dagliga bilder</div>
+        <div class="badge" id="badge3">❤️ Kärleksfull omsorg</div>
+        <div class="badge" id="badge4">🔑 Nyckelservice</div>
+      </div>
+      <div class="areas-pill">
+        <span class="area-tag">📍 Töreboda</span>
+        <span class="area-tag">📍 Mariestad</span>
+      </div>
+    </div>
+    <div class="float-tag left" id="float1">🐾 Toppbetyg</div>
+    <div class="float-tag right" id="float2">🚶 Gruppraster</div>
+  </div>
+</section>
+
+<div class="trust-bar">
+  <div class="trust-item">
+    <span>⭐</span>
+    <div><div class="trust-value" id="trust1v">5.0 Betyg</div><div class="trust-label" id="trust1l">Google &amp; Facebook</div></div>
+  </div>
+  <div class="trust-item">
+    <span>📍</span>
+    <div><div class="trust-value">Töreboda + Mariestad</div><div class="trust-label" id="trust2l">Lokalt &amp; pålitligt</div></div>
+  </div>
+  <div class="trust-item">
+    <span>🛡️</span>
+    <div><div class="trust-value" id="trust3v">Försäkrad</div><div class="trust-label" id="trust3l">För din trygghet</div></div>
+  </div>
+  <div class="trust-item">
+    <span>📅</span>
+    <div><div class="trust-value" id="trust4v">7 dagar/vecka</div><div class="trust-label" id="trust4l">Inkl. helger</div></div>
+  </div>
+</div>
+
+<!-- WALKING SECTION -->
+<section id="walking">
+  <div class="section-eyebrow" id="walk-eyebrow">Hundrastning</div>
+  <h2 class="section-title" id="walk-title">Välj rätt rastningsplan</h2>
+  <p class="section-sub" id="walk-sub">Vi erbjuder gruppraster i Töreboda och Mariestad. Välj det alternativ som passar din vardag — från spontana besök till skräddarsydda månadsabonnemang.</p>
+
+  <div class="walk-tabs">
+    <button class="walk-tab active" id="tab1" onclick="showWalkTab('single',this)">1. Enstaka besök</button>
+    <button class="walk-tab" id="tab2" onclick="showWalkTab('monthly-we',this)">2. Månadsabonnemang inkl. helger</button>
+    <button class="walk-tab" id="tab3" onclick="showWalkTab('monthly-nowe',this)">3. Månadsabonnemang exkl. helger</button>
+    <button class="walk-tab" id="tab4" onclick="showWalkTab('custom',this)">4. Anpassat</button>
+  </div>
+
+  <div id="panel-single" class="walk-panel active">
+    <div class="walk-card">
+      <div class="walk-card-header">
+        <div class="walk-icon">🐾</div>
+        <div>
+          <h3 id="p1-title">Enstaka besök</h3>
+          <div class="walk-subtitle" id="p1-sub">Spontant eller planerat — du bestämmer</div>
+        </div>
+      </div>
+      <p class="walk-desc" id="p1-desc">Perfekt för dig som behöver hjälp en enstaka gång, vare sig det är planerat i förväg eller mer spontant med kortare varsel. Vi gör alltid vårt bästa att hitta en lösning. Grupprast med andra hundar i Töreboda eller Mariestad.</p>
+      <ul class="walk-features">
+        <li><span class="feat-check">✓</span><span id="p1-f1">Grupprast ca 45–60 min</span></li>
+        <li><span class="feat-check">✓</span><span id="p1-f2">Foto och uppdatering efter rasten</span></li>
+        <li><span class="feat-check">✓</span><span id="p1-f3">Bokas via SMS, Messenger eller formulär</span></li>
+        <li><span class="feat-check">✓</span><span id="p1-f4">Spontanbokningar välkomna (platsbaserat)</span></li>
+        <li><span class="feat-check">✓</span><span id="p1-f5">Tillgängligt i Töreboda &amp; Mariestad</span></li>
+      </ul>
+      <div class="walk-price-box">
+        <div class="walk-price">250 kr <small id="p1-unit">/ besök</small></div>
+        <a href="#contact" class="walk-book-btn" id="p1-btn">Boka nu</a>
+      </div>
+    </div>
+    <div class="walk-info-box">
+      <h4 id="p1-info-title">ℹ️ Bra att veta</h4>
+      <p id="p1-info1">Spontanbokningar tas emot så länge det finns plats i gruppen den dagen. Vi rekommenderar att boka minst dagen innan för att garantera plats.</p>
+      <p id="p1-info2">Din hund rastar i sällskap av andra hundar i en trygg och social miljö.</p>
+      <div class="tag-row">
+        <span class="tag">📍 Töreboda</span><span class="tag">📍 Mariestad</span>
+        <span class="tag green" id="p1-tag">✓ Spontant ok</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-monthly-we" class="walk-panel">
+    <div class="walk-card">
+      <div class="walk-card-header">
+        <div class="walk-icon">📅</div>
+        <div>
+          <h3 id="p2-title">Månadsabonnemang inkl. helger</h3>
+          <div class="walk-subtitle" id="p2-sub">7 dagar i veckan — alltid täckt</div>
+        </div>
+      </div>
+      <p class="walk-desc" id="p2-desc">Daglig rastning hela månaden, inklusive lördagar och söndagar. Idealiskt för dig med ett aktivt arbetsschema som behöver pålitlig hjälp även på helgerna. Grupprast i Töreboda eller Mariestad.</p>
+      <ul class="walk-features">
+        <li><span class="feat-check">✓</span><span id="p2-f1">Daglig grupprast mån–sön</span></li>
+        <li><span class="feat-check">✓</span><span id="p2-f2">Ca 45–60 min per rast</span></li>
+        <li><span class="feat-check">✓</span><span id="p2-f3">Foto och daglig rapport</span></li>
+        <li><span class="feat-check">✓</span><span id="p2-f4">Fast tidslucka varje dag</span></li>
+        <li><span class="feat-check">✓</span><span id="p2-f5">Tillgängligt i Töreboda &amp; Mariestad</span></li>
+      </ul>
+      <div class="walk-price-box">
+        <div class="walk-price">2 800 kr <small id="p2-unit">/ månad</small></div>
+        <a href="#contact" class="walk-book-btn" id="p2-btn">Boka abonnemang</a>
+      </div>
+    </div>
+    <div class="walk-info-box">
+      <h4 id="p2-info-title">ℹ️ Om abonnemanget</h4>
+      <p id="p2-info1">Priset är fast per månad oavsett antal dagar. Abonnemanget inkluderar alla dagar — perfekt för full flexibilitet.</p>
+      <p id="p2-info2">Faktura skickas i början av varje månad. Minst en månads uppsägningstid.</p>
+      <div class="tag-row">
+        <span class="tag green" id="p2-tag">✓ Inkl. helger</span>
+        <span class="tag">📍 Töreboda</span><span class="tag">📍 Mariestad</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-monthly-nowe" class="walk-panel">
+    <div class="walk-card">
+      <div class="walk-card-header">
+        <div class="walk-icon">🗓️</div>
+        <div>
+          <h3 id="p3-title">Månadsabonnemang exkl. helger</h3>
+          <div class="walk-subtitle" id="p3-sub">Vardagar mån–fre — smart &amp; ekonomiskt</div>
+        </div>
+      </div>
+      <p class="walk-desc" id="p3-desc">Daglig rastning måndag till fredag varje vecka. Perfekt för dig som är hemma på helgerna och bara behöver hjälp under arbetsveckan. Grupprast i Töreboda eller Mariestad.</p>
+      <ul class="walk-features">
+        <li><span class="feat-check">✓</span><span id="p3-f1">Grupprast mån–fre</span></li>
+        <li><span class="feat-check">✓</span><span id="p3-f2">Ca 45–60 min per rast</span></li>
+        <li><span class="feat-check">✓</span><span id="p3-f3">Foto och daglig rapport</span></li>
+        <li><span class="feat-check">✓</span><span id="p3-f4">Fast tidslucka varje vardag</span></li>
+        <li><span class="feat-check">✓</span><span id="p3-f5">Tillgängligt i Töreboda &amp; Mariestad</span></li>
+      </ul>
+      <div class="walk-price-box">
+        <div class="walk-price">2 100 kr <small id="p3-unit">/ månad</small></div>
+        <a href="#contact" class="walk-book-btn" id="p3-btn">Boka abonnemang</a>
+      </div>
+    </div>
+    <div class="walk-info-box">
+      <h4 id="p3-info-title">ℹ️ Om abonnemanget</h4>
+      <p id="p3-info1">Priset är fast per månad. Inkluderar alla vardagar — ungefär 20–23 dagar beroende på månad.</p>
+      <p id="p3-info2">Faktura skickas i början av varje månad. Minst en månads uppsägningstid.</p>
+      <div class="tag-row">
+        <span class="tag" id="p3-tag1">📅 Mån–Fre</span>
+        <span class="tag green" id="p3-tag2">✓ Spara vs. helger</span>
+        <span class="tag">📍 Töreboda &amp; Mariestad</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-custom" class="walk-panel">
+    <div class="walk-card">
+      <div class="walk-card-header">
+        <div class="walk-icon">✨</div>
+        <div>
+          <h3 id="p4-title">Anpassat paket</h3>
+          <div class="walk-subtitle" id="p4-sub">Skräddarsytt efter dina behov</div>
+        </div>
+      </div>
+      <p class="walk-desc" id="p4-desc">Inget av standardpaketen passar dig? Tillsammans hittar vi en lösning — välj dagar, tider och frekvens som passar din situation. Priset sätts baserat på dina önskemål.</p>
+      <ul class="walk-features">
+        <li><span class="feat-check">✓</span><span id="p4-f1">Valfria dagar i veckan</span></li>
+        <li><span class="feat-check">✓</span><span id="p4-f2">Flexibel tid och längd på rasten</span></li>
+        <li><span class="feat-check">✓</span><span id="p4-f3">Kan kombineras med hundpassning</span></li>
+        <li><span class="feat-check">✓</span><span id="p4-f4">Foto och uppdatering ingår alltid</span></li>
+        <li><span class="feat-check">✓</span><span id="p4-f5">Tillgängligt i Töreboda &amp; Mariestad</span></li>
+      </ul>
+      <div class="walk-price-box">
+        <div>
+          <div class="walk-price" id="p4-price">Offert</div>
+          <small style="color:rgba(59,42,26,0.55);font-size:0.78rem;" id="p4-price-sub">Pris sätts efter dina önskemål</small>
+        </div>
+        <a href="#contact" class="walk-book-btn" id="p4-btn">Kontakta oss</a>
+      </div>
+    </div>
+    <div class="walk-info-box">
+      <h4 id="p4-info-title">ℹ️ Hur det fungerar</h4>
+      <p id="p4-info1">Skicka ett meddelande med dina önskemål — vilka dagar, ungefär hur ofta och om du har några särskilda behov. Vi återkommer med ett förslag och pris.</p>
+      <p id="p4-info2">Anpassade paket kan också kombinera rastning med hundpassning eller övernattning.</p>
+      <div class="tag-row">
+        <span class="tag green" id="p4-tag">✓ Fullt flexibelt</span>
+        <span class="tag">📍 Töreboda &amp; Mariestad</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOG SITTING SECTION -->
+<section id="sitting">
+  <div class="section-eyebrow" id="sit-eyebrow">Hundpassning · Töreboda</div>
+  <h2 class="section-title" id="sit-title">Välj rätt passningsplan</h2>
+  <p class="section-sub" id="sit-sub">Vi erbjuder hundpassning i hemmet i Töreboda. Vi kommer till dig så att din hund får vara kvar i sin trygga miljö. Välj det alternativ som passar dig bäst.</p>
+
+  <div class="walk-tabs">
+    <button class="walk-tab active" id="stab1" onclick="showSitTab('sit-single',this)">1. Enstaka besök</button>
+    <button class="walk-tab" id="stab2" onclick="showSitTab('sit-monthly-we',this)">2. Månadsabonnemang inkl. helger</button>
+    <button class="walk-tab" id="stab3" onclick="showSitTab('sit-monthly-nowe',this)">3. Månadsabonnemang exkl. helger</button>
+    <button class="walk-tab" id="stab4" onclick="showSitTab('sit-custom',this)">4. Anpassat</button>
+  </div>
+
+  <!-- SIT PANEL 1: Single Visit -->
+  <div id="panel-sit-single" class="walk-panel active">
+    <div class="walk-card">
+      <div class="walk-card-header">
+        <div class="walk-icon">🏠</div>
+        <div>
+          <h3 id="sp1-title">Enstaka besök</h3>
+          <div class="walk-subtitle" id="sp1-sub">Spontant eller planerat — du bestämmer</div>
+        </div>
+      </div>
+      <p class="walk-desc" id="sp1-desc">Perfekt om du behöver hjälp vid ett enstaka tillfälle — oavsett om det är planerat i förväg eller mer spontant med kort varsel. Vi gör alltid vårt bästa att hitta en lösning. Vi kommer hem till dig i Töreboda.</p>
+      <ul class="walk-features">
+        <li><span class="feat-check">✓</span><span id="sp1-f1">Passning i ditt hem ca 2–4 timmar</span></li>
+        <li><span class="feat-check">✓</span><span id="sp1-f2">Foto och uppdatering under besöket</span></li>
+        <li><span class="feat-check">✓</span><span id="sp1-f3">Bokas via SMS, Messenger eller formulär</span></li>
+        <li><span class="feat-check">✓</span><span id="sp1-f4">Spontanbokningar välkomna (vid tillgänglighet)</span></li>
+        <li><span class="feat-check">✓</span><span id="sp1-f5">Endast i Töreboda</span></li>
+      </ul>
+      <div class="walk-price-box">
+        <div class="walk-price">350 kr <small id="sp1-unit">/ besök</small></div>
+        <a href="#contact" class="walk-book-btn" id="sp1-btn">Boka nu</a>
+      </div>
+    </div>
+    <div class="walk-info-box">
+      <h4 id="sp1-info-title">ℹ️ Bra att veta</h4>
+      <p id="sp1-info1">Spontanbokningar tas emot så länge vi har möjlighet den dagen. Vi rekommenderar att boka minst dagen innan för att garantera ett besök.</p>
+      <p id="sp1-info2">Vi håller din hund sällskap, ger mat och vatten, och ser till att din hund mår bra medan du är borta.</p>
+      <div class="tag-row">
+        <span class="tag">📍 Töreboda</span>
+        <span class="tag green" id="sp1-tag">✓ Spontant ok</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIT PANEL 2: Monthly incl. weekends -->
+  <div id="panel-sit-monthly-we" class="walk-panel">
+    <div class="walk-card">
+      <div class="walk-card-header">
+        <div class="walk-icon">📅</div>
+        <div>
+          <h3 id="sp2-title">Månadsabonnemang inkl. helger</h3>
+          <div class="walk-subtitle" id="sp2-sub">7 dagar i veckan — alltid täckt</div>
+        </div>
+      </div>
+      <p class="walk-desc" id="sp2-desc">Daglig hundpassning hela månaden, inklusive lördagar och söndagar. Perfekt för dig med ett krävande arbetsschema som behöver pålitlig och regelbunden hjälp även på helgerna. I ditt hem i Töreboda.</p>
+      <ul class="walk-features">
+        <li><span class="feat-check">✓</span><span id="sp2-f1">Daglig passning mån–sön</span></li>
+        <li><span class="feat-check">✓</span><span id="sp2-f2">Ca 2–4 timmar per besök</span></li>
+        <li><span class="feat-check">✓</span><span id="sp2-f3">Foto och daglig rapport</span></li>
+        <li><span class="feat-check">✓</span><span id="sp2-f4">Fast tidslucka varje dag</span></li>
+        <li><span class="feat-check">✓</span><span id="sp2-f5">Endast i Töreboda</span></li>
+      </ul>
+      <div class="walk-price-box">
+        <div class="walk-price">5 500 kr <small id="sp2-unit">/ månad</small></div>
+        <a href="#contact" class="walk-book-btn" id="sp2-btn">Boka abonnemang</a>
+      </div>
+    </div>
+    <div class="walk-info-box">
+      <h4 id="sp2-info-title">ℹ️ Om abonnemanget</h4>
+      <p id="sp2-info1">Priset är fast per månad oavsett antal dagar. Inkluderar alla dagar i veckan — perfekt för full trygghet.</p>
+      <p id="sp2-info2">Faktura skickas i början av varje månad. Minst en månads uppsägningstid.</p>
+      <div class="tag-row">
+        <span class="tag green" id="sp2-tag">✓ Inkl. helger</span>
+        <span class="tag">📍 Töreboda</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIT PANEL 3: Monthly excl. weekends -->
+  <div id="panel-sit-monthly-nowe" class="walk-panel">
+    <div class="walk-card">
+      <div class="walk-card-header">
+        <div class="walk-icon">🗓️</div>
+        <div>
+          <h3 id="sp3-title">Månadsabonnemang exkl. helger</h3>
+          <div class="walk-subtitle" id="sp3-sub">Vardagar mån–fre — smart &amp; ekonomiskt</div>
+        </div>
+      </div>
+      <p class="walk-desc" id="sp3-desc">Daglig hundpassning måndag till fredag. Idealiskt för dig som är hemma på helgerna och bara behöver hjälp under arbetsveckan. Vi kommer hem till dig i Töreboda.</p>
+      <ul class="walk-features">
+        <li><span class="feat-check">✓</span><span id="sp3-f1">Daglig passning mån–fre</span></li>
+        <li><span class="feat-check">✓</span><span id="sp3-f2">Ca 2–4 timmar per besök</span></li>
+        <li><span class="feat-check">✓</span><span id="sp3-f3">Foto och daglig rapport</span></li>
+        <li><span class="feat-check">✓</span><span id="sp3-f4">Fast tidslucka varje vardag</span></li>
+        <li><span class="feat-check">✓</span><span id="sp3-f5">Endast i Töreboda</span></li>
+      </ul>
+      <div class="walk-price-box">
+        <div class="walk-price">4 200 kr <small id="sp3-unit">/ månad</small></div>
+        <a href="#contact" class="walk-book-btn" id="sp3-btn">Boka abonnemang</a>
+      </div>
+    </div>
+    <div class="walk-info-box">
+      <h4 id="sp3-info-title">ℹ️ Om abonnemanget</h4>
+      <p id="sp3-info1">Priset är fast per månad. Inkluderar alla vardagar — ungefär 20–23 dagar beroende på månad.</p>
+      <p id="sp3-info2">Faktura skickas i början av varje månad. Minst en månads uppsägningstid.</p>
+      <div class="tag-row">
+        <span class="tag" id="sp3-tag1">📅 Mån–Fre</span>
+        <span class="tag green" id="sp3-tag2">✓ Spara vs. helger</span>
+        <span class="tag">📍 Töreboda</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIT PANEL 4: Custom -->
+  <div id="panel-sit-custom" class="walk-panel">
+    <div class="walk-card">
+      <div class="walk-card-header">
+        <div class="walk-icon">✨</div>
+        <div>
+          <h3 id="sp4-title">Anpassat paket</h3>
+          <div class="walk-subtitle" id="sp4-sub">Skräddarsytt efter dina behov</div>
+        </div>
+      </div>
+      <p class="walk-desc" id="sp4-desc">Inget av standardpaketen passar dig? Tillsammans hittar vi en lösning — välj dagar, tider och hur länge du behöver hjälp. Priset sätts baserat på dina önskemål. I ditt hem i Töreboda.</p>
+      <ul class="walk-features">
+        <li><span class="feat-check">✓</span><span id="sp4-f1">Valfria dagar i veckan</span></li>
+        <li><span class="feat-check">✓</span><span id="sp4-f2">Flexibel tid och längd på besöket</span></li>
+        <li><span class="feat-check">✓</span><span id="sp4-f3">Kan kombineras med rastning</span></li>
+        <li><span class="feat-check">✓</span><span id="sp4-f4">Foto och uppdatering ingår alltid</span></li>
+        <li><span class="feat-check">✓</span><span id="sp4-f5">Endast i Töreboda</span></li>
+      </ul>
+      <div class="walk-price-box">
+        <div>
+          <div class="walk-price" id="sp4-price">Offert</div>
+          <small style="color:rgba(59,42,26,0.55);font-size:0.78rem;" id="sp4-price-sub">Pris sätts efter dina önskemål</small>
+        </div>
+        <a href="#contact" class="walk-book-btn" id="sp4-btn">Kontakta oss</a>
+      </div>
+    </div>
+    <div class="walk-info-box">
+      <h4 id="sp4-info-title">ℹ️ Hur det fungerar</h4>
+      <p id="sp4-info1">Skicka ett meddelande med dina önskemål — vilka dagar, hur länge och om du har några särskilda behov. Vi återkommer med ett förslag och pris.</p>
+      <p id="sp4-info2">Anpassade paket kan kombinera passning med rastning eller övernattning för ett helhetspaket.</p>
+      <div class="tag-row">
+        <span class="tag green" id="sp4-tag">✓ Fullt flexibelt</span>
+        <span class="tag">📍 Töreboda</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OTHER SERVICES -->
+<section id="other-services">
+  <div style="text-align:center; margin-bottom:0.5rem;">
+    <div class="section-eyebrow" id="os-eyebrow">Mer omsorg</div>
+    <h2 class="section-title" id="os-title">Övriga tjänster</h2>
+    <p class="section-sub" style="margin:0 auto;" id="os-sub">Utöver rastning erbjuder vi dessa tjänster i Töreboda och Mariestad.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon icon-green">🏠</div>
+      <h3 id="s1-title">Hundpassning hemma</h3>
+      <p id="s1-desc">Vi kommer hem till dig så att din hund kan vara i sin trygga miljö medan du är borta.</p>
+      <div class="service-price">350 kr <small id="s1-unit">/ besök</small></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon icon-amber">🛌</div>
+      <h3 id="s2-title">Övernattning</h3>
+      <p id="s2-desc">Vi stannar hemma hos dig över natten — din hund får sällskap, omsorg och trygghet dygnet runt.</p>
+      <div class="service-price">650 kr <small id="s2-unit">/ natt</small></div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon icon-bark">🐾</div>
+      <h3 id="s3-title">Kortvisit</h3>
+      <p id="s3-desc">Snabbt besök för mat, vatten, toalettgång och lite kärlek. Perfekt för stressiga dagar.</p>
+      <div class="service-price">180 kr <small id="s3-unit">/ besök</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div style="text-align:center;">
+    <div class="section-eyebrow" id="how-eyebrow">Processen</div>
+    <h2 class="section-title" id="how-title">Enkelt att komma igång</h2>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3 id="step1-title">Hör av dig</h3>
+      <p id="step1-desc">Fyll i formuläret eller skicka ett SMS. Vi svarar inom några timmar.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3 id="step2-title">Gratis träff</h3>
+      <p id="step2-desc">Vi träffar dig och din hund hemma — utan kostnad och utan press.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3 id="step3-title">Bekräfta bokning</h3>
+      <p id="step3-desc">Välj tjänst och datum. Vi sköter resten så att du kan slappna av.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3 id="step4-title">Njut av uppdateringarna</h3>
+      <p id="step4-desc">Få dagliga bilder och meddelanden. Ren sinnesfrid.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-eyebrow" id="contact-eyebrow">Redo att boka?</div>
+  <h2 class="section-title" id="contact-title">Vi fixar det för din hund 🐾</h2>
+  <p class="section-sub" id="contact-sub">Fyll i formuläret så hör vi av oss inom några timmar för att bekräfta din bokning.</p>
+  <form class="contact-form" onsubmit="handleSubmit(event)">
+    <input type="text" id="f-name" placeholder="Ditt namn / Your name" required>
+    <input type="email" id="f-email" placeholder="E-postadress / Email" required>
+    <input type="tel" id="f-phone" placeholder="Telefonnummer / Phone number">
+    <select id="f-service">
+      <option value="" disabled selected id="f-service-ph">Välj tjänst / Select service</option>
+      <option id="fo1">Enstaka rast / Single Walk</option>
+      <option id="fo2">Månadsabonnemang inkl. helger / Monthly incl. weekends</option>
+      <option id="fo3">Månadsabonnemang exkl. helger / Monthly excl. weekends</option>
+      <option id="fo4">Anpassat paket / Custom Package</option>
+      <option disabled>── Hundpassning · Töreboda ──</option>
+      <option id="fo5">Passning enstaka besök / Sitting Single Visit</option>
+      <option id="fo6">Passning månadsabonnemang inkl. helger / Sitting Monthly incl. weekends</option>
+      <option id="fo7">Passning månadsabonnemang exkl. helger / Sitting Monthly excl. weekends</option>
+      <option id="fo8">Passning anpassat paket / Sitting Custom</option>
+      <option disabled>── Övriga tjänster ──</option>
+      <option id="fo9">Övernattning / Overnight Stay</option>
+      <option id="fo10">Kortvisit / Drop-In Visit</option>
+    </select>
+    <select id="f-area">
+      <option value="" disabled selected id="f-area-ph">Ort / Location</option>
+      <option>Töreboda</option>
+      <option>Mariestad</option>
+    </select>
+    <input type="text" id="f-dog" placeholder="Hundens namn &amp; ras / Dog's name &amp; breed">
+    <textarea id="f-msg" placeholder="Berätta om din hund... / Tell us about your dog..."></textarea>
+    <button type="submit" class="btn-submit" id="f-submit">Skicka bokningsförfrågan 🐾</button>
+  </form>
+</section>
+
+<footer>
+  <p>© 2025 PawsomeCare · Töreboda &amp; Mariestad · <a href="mailto:hello@pawsomecare.se">hello@pawsomecare.se</a></p>
+</footer>
+
+<script>
+const translations = {
+  sv: {
+    'nav-walking': 'Rastning', 'nav-services': 'Tjänster', 'nav-how': 'Hur det fungerar', 'nav-book': 'Boka nu',
+    'hero-eyebrow': '🐾 Hundrastning & Hundpassning · Töreboda & Mariestad',
+    'hero-h1': 'Din hund förtjänar det <em>bästa</em> när du är borta',
+    'hero-desc': 'Professionell hundrastning och hundpassning med kärlek, pålitlighet och dagliga uppdateringar — i Töreboda och Mariestad.',
+    'hero-btn1': '📅 Boka ett besök', 'hero-btn2': 'Se priser',
+    'card-tagline': 'Glada svansar, varje gång',
+    'badge1': '✅ Ansvarsförsäkrad', 'badge2': '📸 Dagliga bilder', 'badge3': '❤️ Kärleksfull omsorg', 'badge4': '🔑 Nyckelservice',
+    'float1': '🐾 Toppbetyg', 'float2': '🚶 Gruppraster',
+    'trust1v': '5.0 Betyg', 'trust1l': 'Google & Facebook', 'trust2l': 'Lokalt & pålitligt',
+    'trust3v': 'Försäkrad', 'trust3l': 'För din trygghet', 'trust4v': '7 dagar/vecka', 'trust4l': 'Inkl. helger',
+    'walk-eyebrow': 'Hundrastning', 'walk-title': 'Välj rätt rastningsplan',
+    'walk-sub': 'Vi erbjuder gruppraster i Töreboda och Mariestad. Välj det alternativ som passar din vardag — från spontana besök till skräddarsydda månadsabonnemang.',
+    'tab1': '1. Enstaka besök', 'tab2': '2. Månadsabonnemang inkl. helger', 'tab3': '3. Månadsabonnemang exkl. helger', 'tab4': '4. Anpassat',
+    'p1-title': 'Enstaka besök', 'p1-sub': 'Spontant eller planerat — du bestämmer',
+    'p1-desc': 'Perfekt för dig som behöver hjälp en enstaka gång, vare sig det är planerat i förväg eller mer spontant med kortare varsel. Vi gör alltid vårt bästa att hitta en lösning. Grupprast med andra hundar i Töreboda eller Mariestad.',
+    'p1-f1': 'Grupprast ca 45–60 min', 'p1-f2': 'Foto och uppdatering efter rasten', 'p1-f3': 'Bokas via SMS, Messenger eller formulär', 'p1-f4': 'Spontanbokningar välkomna (platsbaserat)', 'p1-f5': 'Tillgängligt i Töreboda & Mariestad',
+    'p1-unit': '/ besök', 'p1-btn': 'Boka nu', 'p1-info-title': 'ℹ️ Bra att veta',
+    'p1-info1': 'Spontanbokningar tas emot så länge det finns plats i gruppen den dagen. Vi rekommenderar att boka minst dagen innan för att garantera plats.',
+    'p1-info2': 'Din hund rastar i sällskap av andra hundar i en trygg och social miljö.', 'p1-tag': '✓ Spontant ok',
+    'p2-title': 'Månadsabonnemang inkl. helger', 'p2-sub': '7 dagar i veckan — alltid täckt',
+    'p2-desc': 'Daglig rastning hela månaden, inklusive lördagar och söndagar. Idealiskt för dig med ett aktivt arbetsschema som behöver pålitlig hjälp även på helgerna. Grupprast i Töreboda eller Mariestad.',
+    'p2-f1': 'Daglig grupprast mån–sön', 'p2-f2': 'Ca 45–60 min per rast', 'p2-f3': 'Foto och daglig rapport', 'p2-f4': 'Fast tidslucka varje dag', 'p2-f5': 'Tillgängligt i Töreboda & Mariestad',
+    'p2-unit': '/ månad', 'p2-btn': 'Boka abonnemang', 'p2-info-title': 'ℹ️ Om abonnemanget',
+    'p2-info1': 'Priset är fast per månad oavsett antal dagar. Abonnemanget inkluderar alla dagar — perfekt för full flexibilitet.',
+    'p2-info2': 'Faktura skickas i början av varje månad. Minst en månads uppsägningstid.', 'p2-tag': '✓ Inkl. helger',
+    'p3-title': 'Månadsabonnemang exkl. helger', 'p3-sub': 'Vardagar mån–fre — smart & ekonomiskt',
+    'p3-desc': 'Daglig rastning måndag till fredag varje vecka. Perfekt för dig som är hemma på helgerna och bara behöver hjälp under arbetsveckan. Grupprast i Töreboda eller Mariestad.',
+    'p3-f1': 'Grupprast mån–fre', 'p3-f2': 'Ca 45–60 min per rast', 'p3-f3': 'Foto och daglig rapport', 'p3-f4': 'Fast tidslucka varje vardag', 'p3-f5': 'Tillgängligt i Töreboda & Mariestad',
+    'p3-unit': '/ månad', 'p3-btn': 'Boka abonnemang', 'p3-info-title': 'ℹ️ Om abonnemanget',
+    'p3-info1': 'Priset är fast per månad. Inkluderar alla vardagar — ungefär 20–23 dagar beroende på månad.',
+    'p3-info2': 'Faktura skickas i början av varje månad. Minst en månads uppsägningstid.',
+    'p3-tag1': '📅 Mån–Fre', 'p3-tag2': '✓ Spara vs. helger',
+    'p4-title': 'Anpassat paket', 'p4-sub': 'Skräddarsytt efter dina behov',
+    'p4-desc': 'Inget av standardpaketen passar dig? Tillsammans hittar vi en lösning — välj dagar, tider och frekvens som passar din situation. Priset sätts baserat på dina önskemål.',
+    'p4-f1': 'Valfria dagar i veckan', 'p4-f2': 'Flexibel tid och längd på rasten', 'p4-f3': 'Kan kombineras med hundpassning', 'p4-f4': 'Foto och uppdatering ingår alltid', 'p4-f5': 'Tillgängligt i Töreboda & Mariestad',
+    'p4-price': 'Offert', 'p4-price-sub': 'Pris sätts efter dina önskemål', 'p4-btn': 'Kontakta oss',
+    'p4-info-title': 'ℹ️ Hur det fungerar',
+    'p4-info1': 'Skicka ett meddelande med dina önskemål — vilka dagar, ungefär hur ofta och om du har några särskilda behov. Vi återkommer med ett förslag och pris.',
+    'p4-info2': 'Anpassade paket kan också kombinera rastning med hundpassning eller övernattning.', 'p4-tag': '✓ Fullt flexibelt',
+    'nav-sitting': 'Hundpassning',
+    'sit-eyebrow': 'Hundpassning · Töreboda', 'sit-title': 'Välj rätt passningsplan',
+    'sit-sub': 'Vi erbjuder hundpassning i hemmet i Töreboda. Vi kommer till dig så att din hund får vara kvar i sin trygga miljö. Välj det alternativ som passar dig bäst.',
+    'stab1': '1. Enstaka besök', 'stab2': '2. Månadsabonnemang inkl. helger', 'stab3': '3. Månadsabonnemang exkl. helger', 'stab4': '4. Anpassat',
+    'sp1-title': 'Enstaka besök', 'sp1-sub': 'Spontant eller planerat — du bestämmer',
+    'sp1-desc': 'Perfekt om du behöver hjälp vid ett enstaka tillfälle — oavsett om det är planerat i förväg eller mer spontant med kort varsel. Vi gör alltid vårt bästa att hitta en lösning. Vi kommer hem till dig i Töreboda.',
+    'sp1-f1': 'Passning i ditt hem ca 2–4 timmar', 'sp1-f2': 'Foto och uppdatering under besöket', 'sp1-f3': 'Bokas via SMS, Messenger eller formulär', 'sp1-f4': 'Spontanbokningar välkomna (vid tillgänglighet)', 'sp1-f5': 'Endast i Töreboda',
+    'sp1-unit': '/ besök', 'sp1-btn': 'Boka nu', 'sp1-info-title': 'ℹ️ Bra att veta',
+    'sp1-info1': 'Spontanbokningar tas emot så länge vi har möjlighet den dagen. Vi rekommenderar att boka minst dagen innan för att garantera ett besök.',
+    'sp1-info2': 'Vi håller din hund sällskap, ger mat och vatten, och ser till att din hund mår bra medan du är borta.', 'sp1-tag': '✓ Spontant ok',
+    'sp2-title': 'Månadsabonnemang inkl. helger', 'sp2-sub': '7 dagar i veckan — alltid täckt',
+    'sp2-desc': 'Daglig hundpassning hela månaden, inklusive lördagar och söndagar. Perfekt för dig med ett krävande arbetsschema som behöver pålitlig och regelbunden hjälp även på helgerna. I ditt hem i Töreboda.',
+    'sp2-f1': 'Daglig passning mån–sön', 'sp2-f2': 'Ca 2–4 timmar per besök', 'sp2-f3': 'Foto och daglig rapport', 'sp2-f4': 'Fast tidslucka varje dag', 'sp2-f5': 'Endast i Töreboda',
+    'sp2-unit': '/ månad', 'sp2-btn': 'Boka abonnemang', 'sp2-info-title': 'ℹ️ Om abonnemanget',
+    'sp2-info1': 'Priset är fast per månad oavsett antal dagar. Inkluderar alla dagar i veckan — perfekt för full trygghet.',
+    'sp2-info2': 'Faktura skickas i början av varje månad. Minst en månads uppsägningstid.', 'sp2-tag': '✓ Inkl. helger',
+    'sp3-title': 'Månadsabonnemang exkl. helger', 'sp3-sub': 'Vardagar mån–fre — smart & ekonomiskt',
+    'sp3-desc': 'Daglig hundpassning måndag till fredag. Idealiskt för dig som är hemma på helgerna och bara behöver hjälp under arbetsveckan. Vi kommer hem till dig i Töreboda.',
+    'sp3-f1': 'Daglig passning mån–fre', 'sp3-f2': 'Ca 2–4 timmar per besök', 'sp3-f3': 'Foto och daglig rapport', 'sp3-f4': 'Fast tidslucka varje vardag', 'sp3-f5': 'Endast i Töreboda',
+    'sp3-unit': '/ månad', 'sp3-btn': 'Boka abonnemang', 'sp3-info-title': 'ℹ️ Om abonnemanget',
+    'sp3-info1': 'Priset är fast per månad. Inkluderar alla vardagar — ungefär 20–23 dagar beroende på månad.',
+    'sp3-info2': 'Faktura skickas i början av varje månad. Minst en månads uppsägningstid.',
+    'sp3-tag1': '📅 Mån–Fre', 'sp3-tag2': '✓ Spara vs. helger',
+    'sp4-title': 'Anpassat paket', 'sp4-sub': 'Skräddarsytt efter dina behov',
+    'sp4-desc': 'Inget av standardpaketen passar dig? Tillsammans hittar vi en lösning — välj dagar, tider och hur länge du behöver hjälp. Priset sätts baserat på dina önskemål. I ditt hem i Töreboda.',
+    'sp4-f1': 'Valfria dagar i veckan', 'sp4-f2': 'Flexibel tid och längd på besöket', 'sp4-f3': 'Kan kombineras med rastning', 'sp4-f4': 'Foto och uppdatering ingår alltid', 'sp4-f5': 'Endast i Töreboda',
+    'sp4-price': 'Offert', 'sp4-price-sub': 'Pris sätts efter dina önskemål', 'sp4-btn': 'Kontakta oss',
+    'sp4-info-title': 'ℹ️ Hur det fungerar',
+    'sp4-info1': 'Skicka ett meddelande med dina önskemål — vilka dagar, hur länge och om du har några särskilda behov. Vi återkommer med ett förslag och pris.',
+    'sp4-info2': 'Anpassade paket kan kombinera passning med rastning eller övernattning för ett helhetspaket.', 'sp4-tag': '✓ Fullt flexibelt',
+    'os-eyebrow': 'Mer omsorg', 'os-title': 'Övriga tjänster', 'os-sub': 'Utöver rastning erbjuder vi dessa tjänster i Töreboda och Mariestad.',
+    's1-title': 'Hundpassning hemma', 's1-desc': 'Vi kommer hem till dig så att din hund kan vara i sin trygga miljö medan du är borta.', 's1-unit': '/ besök',
+    's2-title': 'Övernattning', 's2-desc': 'Vi stannar hemma hos dig över natten — din hund får sällskap, omsorg och trygghet dygnet runt.', 's2-unit': '/ natt',
+    's3-title': 'Kortvisit', 's3-desc': 'Snabbt besök för mat, vatten, toalettgång och lite kärlek. Perfekt för stressiga dagar.', 's3-unit': '/ besök',
+    'how-eyebrow': 'Processen', 'how-title': 'Enkelt att komma igång',
+    'step1-title': 'Hör av dig', 'step1-desc': 'Fyll i formuläret eller skicka ett SMS. Vi svarar inom några timmar.',
+    'step2-title': 'Gratis träff', 'step2-desc': 'Vi träffar dig och din hund hemma — utan kostnad och utan press.',
+    'step3-title': 'Bekräfta bokning', 'step3-desc': 'Välj tjänst och datum. Vi sköter resten så att du kan slappna av.',
+    'step4-title': 'Njut av uppdateringarna', 'step4-desc': 'Få dagliga bilder och meddelanden. Ren sinnesfrid.',
+    'contact-eyebrow': 'Redo att boka?', 'contact-title': 'Vi fixar det för din hund 🐾',
+    'contact-sub': 'Fyll i formuläret så hör vi av oss inom några timmar för att bekräfta din bokning.',
+    'f-submit': 'Skicka bokningsförfrågan 🐾',
+  },
+  en: {
+    'nav-walking': 'Walking', 'nav-services': 'Services', 'nav-how': 'How it works', 'nav-book': 'Book Now',
+    'hero-eyebrow': '🐾 Dog Walking & Sitting · Töreboda & Mariestad',
+    'hero-h1': 'Your dog deserves the <em>best</em> when you\'re away',
+    'hero-desc': 'Professional dog walking and sitting with love, reliability and daily updates — serving Töreboda and Mariestad.',
+    'hero-btn1': '📅 Book a Visit', 'hero-btn2': 'See Prices',
+    'card-tagline': 'Happy tails, every time',
+    'badge1': '✅ Fully insured', 'badge2': '📸 Daily photos', 'badge3': '❤️ Loving care', 'badge4': '🔑 Key holding',
+    'float1': '🐾 Top rated', 'float2': '🚶 Group walks',
+    'trust1v': '5.0 Rating', 'trust1l': 'Google & Facebook', 'trust2l': 'Local & reliable',
+    'trust3v': 'Insured', 'trust3l': 'For your peace of mind', 'trust4v': '7 days a week', 'trust4l': 'Incl. weekends',
+    'walk-eyebrow': 'Dog Walking', 'walk-title': 'Choose the right walking plan',
+    'walk-sub': 'We offer group walks in Töreboda and Mariestad. Choose the plan that fits your lifestyle — from spontaneous visits to fully custom monthly packages.',
+    'tab1': '1. Single Visit', 'tab2': '2. Monthly incl. weekends', 'tab3': '3. Monthly excl. weekends', 'tab4': '4. Custom',
+    'p1-title': 'Single Visit', 'p1-sub': 'Spontaneous or planned — your choice',
+    'p1-desc': 'Perfect if you need help just once — whether planned well in advance or arranged more spontaneously on short notice. We always do our best to find a solution. Group walk with other dogs in Töreboda or Mariestad.',
+    'p1-f1': 'Group walk approx. 45–60 min', 'p1-f2': 'Photo & update after the walk', 'p1-f3': 'Book via SMS, Messenger or form', 'p1-f4': 'Spontaneous bookings welcome (subject to availability)', 'p1-f5': 'Available in Töreboda & Mariestad',
+    'p1-unit': '/ visit', 'p1-btn': 'Book now', 'p1-info-title': 'ℹ️ Good to know',
+    'p1-info1': 'Spontaneous bookings are accepted as long as there\'s space in the group that day. We recommend booking at least the day before to guarantee a spot.',
+    'p1-info2': 'Your dog walks with other dogs in a safe and social environment.', 'p1-tag': '✓ Spontaneous ok',
+    'p2-title': 'Monthly incl. weekends', 'p2-sub': '7 days a week — always covered',
+    'p2-desc': 'Daily walks throughout the month, including Saturdays and Sundays. Ideal if you have an active work schedule and need reliable help on weekends too. Group walks in Töreboda or Mariestad.',
+    'p2-f1': 'Daily group walk Mon–Sun', 'p2-f2': 'Approx. 45–60 min per walk', 'p2-f3': 'Photo & daily report', 'p2-f4': 'Fixed time slot every day', 'p2-f5': 'Available in Töreboda & Mariestad',
+    'p2-unit': '/ month', 'p2-btn': 'Subscribe', 'p2-info-title': 'ℹ️ About the subscription',
+    'p2-info1': 'The price is fixed per month regardless of the number of days. The subscription includes all days — perfect for full flexibility.',
+    'p2-info2': 'Invoice sent at the start of each month. Minimum one month\'s notice to cancel.', 'p2-tag': '✓ Incl. weekends',
+    'p3-title': 'Monthly excl. weekends', 'p3-sub': 'Weekdays Mon–Fri — smart & cost-effective',
+    'p3-desc': 'Daily walking Monday to Friday each week. Perfect if you\'re home on weekends and only need help during working days. Group walks in Töreboda or Mariestad.',
+    'p3-f1': 'Group walk Mon–Fri', 'p3-f2': 'Approx. 45–60 min per walk', 'p3-f3': 'Photo & daily report', 'p3-f4': 'Fixed time slot every weekday', 'p3-f5': 'Available in Töreboda & Mariestad',
+    'p3-unit': '/ month', 'p3-btn': 'Subscribe', 'p3-info-title': 'ℹ️ About the subscription',
+    'p3-info1': 'The price is fixed per month. Includes all weekdays — approximately 20–23 days depending on the month.',
+    'p3-info2': 'Invoice sent at the start of each month. Minimum one month\'s notice to cancel.',
+    'p3-tag1': '📅 Mon–Fri', 'p3-tag2': '✓ Save vs. full week',
+    'p4-title': 'Custom Package', 'p4-sub': 'Tailored exactly to your needs',
+    'p4-desc': 'None of the standard plans work for you? We\'ll find a solution together — choose the days, times and frequency that suit your situation. Pricing is set based on your needs.',
+    'p4-f1': 'Choose your own days of the week', 'p4-f2': 'Flexible time and walk duration', 'p4-f3': 'Can be combined with dog sitting', 'p4-f4': 'Photos & updates always included', 'p4-f5': 'Available in Töreboda & Mariestad',
+    'p4-price': 'Quote', 'p4-price-sub': 'Price set based on your needs', 'p4-btn': 'Contact us',
+    'p4-info-title': 'ℹ️ How it works',
+    'p4-info1': 'Send us a message with your preferences — which days, roughly how often, and any special requirements. We\'ll come back with a proposal and price.',
+    'p4-info2': 'Custom packages can also combine walking with dog sitting or overnight stays.', 'p4-tag': '✓ Fully flexible',
+    'nav-sitting': 'Dog Sitting',
+    'sit-eyebrow': 'Dog Sitting · Töreboda', 'sit-title': 'Choose the right sitting plan',
+    'sit-sub': 'We offer in-home dog sitting in Töreboda. We come to you so your dog stays in their familiar, safe environment. Choose the option that suits you best.',
+    'stab1': '1. Single Visit', 'stab2': '2. Monthly incl. weekends', 'stab3': '3. Monthly excl. weekends', 'stab4': '4. Custom',
+    'sp1-title': 'Single Visit', 'sp1-sub': 'Spontaneous or planned — your choice',
+    'sp1-desc': 'Perfect if you need help just once — whether planned well in advance or arranged more spontaneously on short notice. We always do our best to find a solution. We come to your home in Töreboda.',
+    'sp1-f1': 'In-home sitting approx. 2–4 hours', 'sp1-f2': 'Photo & update during the visit', 'sp1-f3': 'Book via SMS, Messenger or form', 'sp1-f4': 'Spontaneous bookings welcome (subject to availability)', 'sp1-f5': 'Töreboda only',
+    'sp1-unit': '/ visit', 'sp1-btn': 'Book now', 'sp1-info-title': 'ℹ️ Good to know',
+    'sp1-info1': 'Spontaneous bookings are accepted when we\'re available that day. We recommend booking at least the day before to guarantee a slot.',
+    'sp1-info2': 'We keep your dog company, provide food and water, and make sure they\'re happy and comfortable while you\'re away.', 'sp1-tag': '✓ Spontaneous ok',
+    'sp2-title': 'Monthly incl. weekends', 'sp2-sub': '7 days a week — always covered',
+    'sp2-desc': 'Daily dog sitting throughout the month, including Saturdays and Sundays. Perfect if you have a demanding work schedule and need reliable help on weekends too. In your home in Töreboda.',
+    'sp2-f1': 'Daily sitting Mon–Sun', 'sp2-f2': 'Approx. 2–4 hours per visit', 'sp2-f3': 'Photo & daily report', 'sp2-f4': 'Fixed time slot every day', 'sp2-f5': 'Töreboda only',
+    'sp2-unit': '/ month', 'sp2-btn': 'Subscribe', 'sp2-info-title': 'ℹ️ About the subscription',
+    'sp2-info1': 'The price is fixed per month regardless of the number of days. Includes all days of the week — perfect for full peace of mind.',
+    'sp2-info2': 'Invoice sent at the start of each month. Minimum one month\'s notice to cancel.', 'sp2-tag': '✓ Incl. weekends',
+    'sp3-title': 'Monthly excl. weekends', 'sp3-sub': 'Weekdays Mon–Fri — smart & cost-effective',
+    'sp3-desc': 'Daily dog sitting Monday to Friday each week. Ideal if you\'re home on weekends and only need help during working days. We come to your home in Töreboda.',
+    'sp3-f1': 'Daily sitting Mon–Fri', 'sp3-f2': 'Approx. 2–4 hours per visit', 'sp3-f3': 'Photo & daily report', 'sp3-f4': 'Fixed time slot every weekday', 'sp3-f5': 'Töreboda only',
+    'sp3-unit': '/ month', 'sp3-btn': 'Subscribe', 'sp3-info-title': 'ℹ️ About the subscription',
+    'sp3-info1': 'The price is fixed per month. Includes all weekdays — approximately 20–23 days depending on the month.',
+    'sp3-info2': 'Invoice sent at the start of each month. Minimum one month\'s notice to cancel.',
+    'sp3-tag1': '📅 Mon–Fri', 'sp3-tag2': '✓ Save vs. full week',
+    'sp4-title': 'Custom Package', 'sp4-sub': 'Tailored exactly to your needs',
+    'sp4-desc': 'None of the standard plans work for you? We\'ll find a solution together — choose the days, times and how long you need help. Pricing is set based on your needs. In your home in Töreboda.',
+    'sp4-f1': 'Choose your own days of the week', 'sp4-f2': 'Flexible time and visit duration', 'sp4-f3': 'Can be combined with walking', 'sp4-f4': 'Photos & updates always included', 'sp4-f5': 'Töreboda only',
+    'sp4-price': 'Quote', 'sp4-price-sub': 'Price set based on your needs', 'sp4-btn': 'Contact us',
+    'sp4-info-title': 'ℹ️ How it works',
+    'sp4-info1': 'Send us a message with your preferences — which days, how long, and any special requirements. We\'ll come back with a proposal and price.',
+    'sp4-info2': 'Custom packages can combine sitting with walking or overnight stays for a complete care solution.', 'sp4-tag': '✓ Fully flexible',
+    'os-eyebrow': 'More Care', 'os-title': 'Other Services', 'os-sub': 'Beyond walking, we offer these services in Töreboda and Mariestad.',
+    's1-title': 'Home Dog Sitting', 's1-desc': 'We come to your home so your dog can stay in their familiar environment while you\'re away.', 's1-unit': '/ visit',
+    's2-title': 'Overnight Stay', 's2-desc': 'We stay at your home overnight — your dog gets company, care and comfort around the clock.', 's2-unit': '/ night',
+    's3-title': 'Drop-In Visit', 's3-desc': 'Quick check-in for food, water, toilet and a little love. Perfect for busy days.', 's3-unit': '/ visit',
+    'how-eyebrow': 'The Process', 'how-title': 'Simple to get started',
+    'step1-title': 'Get in touch', 'step1-desc': 'Fill in the form or send an SMS. We respond within a few hours.',
+    'step2-title': 'Free meet & greet', 'step2-desc': 'We meet you and your dog at home — no charge, no pressure.',
+    'step3-title': 'Confirm booking', 'step3-desc': 'Choose your service and dates. We handle the rest so you can relax.',
+    'step4-title': 'Enjoy the updates', 'step4-desc': 'Receive daily photos and messages. Pure peace of mind.',
+    'contact-eyebrow': 'Ready to book?', 'contact-title': 'Let\'s sort it for your pup 🐾',
+    'contact-sub': 'Fill in the form and we\'ll be in touch within a few hours to confirm your booking.',
+    'f-submit': 'Send Booking Request 🐾',
+  }
+};
+
+let currentLang = 'sv';
+
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.lang-btn[onclick="setLang(\'' + lang + '\')"]').classList.add('active');
+  const t = translations[lang];
+  Object.keys(t).forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') { el.placeholder = t[id]; }
+    else if (el.tagName === 'OPTION') { el.textContent = t[id]; }
+    else { el.innerHTML = t[id]; }
+  });
+}
+
+function showWalkTab(id, btn) {
+  document.querySelectorAll('#walking .walk-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#walking .walk-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showSitTab(id, btn) {
+  document.querySelectorAll('#sitting .walk-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#sitting .walk-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function handleSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('.btn-submit');
+  btn.textContent = currentLang === 'sv' ? '✅ Skickat! Vi hör av oss snart.' : '✅ Sent! We\'ll be in touch soon.';
+  btn.style.background = '#4A7C59';
+  btn.disabled = true;
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) { entry.target.style.opacity='1'; entry.target.style.transform='translateY(0)'; }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.service-card, .step, .walk-card, .walk-info-box').forEach(el => {
+  el.style.opacity = '0'; el.style.transform = 'translateY(28px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
